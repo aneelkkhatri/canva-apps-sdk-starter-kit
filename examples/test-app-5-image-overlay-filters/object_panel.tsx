@@ -6,26 +6,142 @@ import { appProcess } from "@canva/platform";
 import React from "react"
 import PixelsJS from "./lib"
 
+const groups = [{
+  "key": "brightness",
+  "title": "Brightness",
+  "filters": [
+    "darkify",
+    "incbrightness",
+    "incbrightness2",
+    "invert",
+    "sat_adj",
+    // "a",
+    "pixel_blue"
+  ]
+}, {
+  "key": "color_tints",
+  "title": "Color Tints",
+  "filters": [
+    "ocean",
+    "vintage",
+    "perfume",
+    "serenity",
+    "warmth",
+    "neue",
+    "sunset",
+    "wood",
+    "lix",
+    "ryo",
+    "bluescale",
+    "solange",
+    "evening",
+    "crimson",
+    "phase",
+    "coral",
+    "lemon",
+    "frontward",
+    "pink_aura",
+    "haze",
+    "cool_twilight",
+    "blues",
+    // "horizon",
+    "mellow",
+    "solange_dark",
+    "solange_grey",
+    "zapt",
+    "eon",
+    "aeon",
+    "purplescale",
+    "radio",
+    "twenties",
+    "greyscale",
+    "grime",
+    "redgreyscale",
+    "greengreyscale",
+    "rosetint",
+    "red_effect"]
+}, {
+  "key": "gamma",
+  "title": "Gamma",
+  "filters": [
+    "gamma",
+    "teal_gamma",
+    "purple_gamma",
+    "yellow_gamma",
+    "bluered_gamma",
+    "green_gamma",
+    "red_gamma"
+  ]
+}, {
+  "key": "line_gen",
+  "title": "Line Generators",
+  "filters": [
+    "horizontal_lines",
+    "diagonal_lines",
+    "green_diagonal_lines"
+  ]
+}, {
+  "key": "noise_gen",
+  "title": "Noise Generators",
+  "filters": [
+    "teal_min_noise",
+    "dark_purple_min_noise",
+    "pink_min_noise",
+    "matrix",
+    "cosmic",
+    "min_noise",
+    "red_min_noise",
+    "matrix2",
+    "green_med_noise",
+    "green_min_noise",
+    "blue_min_noise",
+    "purple_min_noise"
+  ]
+}, {
+  "key": "offset_filters",
+  "title": "Offset Filters",
+  "filters":[
+    "extreme_offset_blue",
+    "extreme_offset_green",
+    "offset_green",
+    "extra_offset_blue",
+    "extra_offset_red",
+    "extra_offset_green",
+    "extreme_offset_red",
+    "offset",
+    "offset_blue",
+    "rgbSplit"
+  ]
+}, {
+  "key": "specks_gen",
+  "title": "Specks Generators",
+  "filters": [
+    "specks_redscale",
+    "eclectic",
+    "green_specks",
+    "casino",
+    "specks",
+    "yellow_casino",
+    "retroviolet",
+    "black_specks",
+    "white_specks",
+    "salt_and_pepper"
+  ]
+}, {
+  "key": "misc",
+  "title": "Miscellaneous",
+  "filters": [
+    "threshold",
+    "threshold75",
+    "threshold125",
+    "pixelate",
+    "pixelate16"
+  ]
+}]
 
-export type CloseOpts = CloseParams;
-
-type OverlayProps = {
-  context1: AppProcessInfo<LaunchParams>;
-};
-
-export const ObjectPanel = (props: OverlayProps) => {
-  const { context1: appContext } = props;
-
+export const ObjectPanel = () => {
   const overlay = useOverlay("image_selection");
-
-  if (overlay.isOpen) {
-    return <OverlayOpen overlay={overlay}/>
-  }
-
-  return <OverlayClosed overlay={overlay}/>
-}
-
-function OverlayOpen({overlay}) {
+  const [opening, setOpening] = React.useState(false);
   const [isImageReady, setIsImageReady] = React.useState(false);
   const [saving, setSaving] = React.useState(false);
   const [filtersMap, setFiltersMap] = React.useState(null);
@@ -41,8 +157,8 @@ function OverlayOpen({overlay}) {
   }
   async function gene(imageUrl) {
     const canvas = document.createElement('canvas');
-    canvas.width = 400;
-    canvas.height = 400;
+    canvas.width = 200;
+    canvas.height = 200;
     const context = canvas.getContext('2d');
 
     return new Promise(async (resolve, reject) => {
@@ -60,7 +176,6 @@ function OverlayOpen({overlay}) {
       
       return resolve(data);
     })
-    
     
   }
 
@@ -86,11 +201,14 @@ function OverlayOpen({overlay}) {
   }
 
   React.useEffect(() => {
-    appProcess.registerOnMessage((sender, message) => {
+    return void appProcess.registerOnMessage((sender, message) => {
       console.log(message);
       const isImageReady = Boolean(message.isImageReady);
       setIsImageReady(isImageReady);
-      generateImageUrls(message.imageUrl);
+      if (isImageReady) {
+        generateImageUrls(message.imageUrl);
+        setOpening(false);
+      }
     });
   }, []);
 
@@ -128,138 +246,7 @@ function OverlayOpen({overlay}) {
         key={filter.key}
       />);
   }
-  const groups = [{
-    "key": "brightness",
-    "title": "Brightness",
-    "filters": [
-      "darkify",
-      "incbrightness",
-      "incbrightness2",
-      "invert",
-      "sat_adj",
-      // "a",
-      "pixel_blue"
-    ]
-  }, {
-    "key": "color_tints",
-    "title": "Color Tints",
-    "filters": [
-      "ocean",
-      "vintage",
-      "perfume",
-      "serenity",
-      "warmth",
-      "neue",
-      "sunset",
-      "wood",
-      "lix",
-      "ryo",
-      "bluescale",
-      "solange",
-      "evening",
-      "crimson",
-      "phase",
-      "coral",
-      "lemon",
-      "frontward",
-      "pink_aura",
-      "haze",
-      "cool_twilight",
-      "blues",
-      // "horizon",
-      "mellow",
-      "solange_dark",
-      "solange_grey",
-      "zapt",
-      "eon",
-      "aeon",
-      "purplescale",
-      "radio",
-      "twenties",
-      "greyscale",
-      "grime",
-      "redgreyscale",
-      "greengreyscale",
-      "rosetint",
-      "red_effect"]
-  }, {
-    "key": "gamma",
-    "title": "Gamma",
-    "filters": [
-      "gamma",
-      "teal_gamma",
-      "purple_gamma",
-      "yellow_gamma",
-      "bluered_gamma",
-      "green_gamma",
-      "red_gamma"
-    ]
-  }, {
-    "key": "line_gen",
-    "title": "Line Generators",
-    "filters": [
-      "horizontal_lines",
-      "diagonal_lines",
-      "green_diagonal_lines"
-    ]
-  }, {
-    "key": "noise_gen",
-    "title": "Noise Generators",
-    "filters": [
-      "teal_min_noise",
-      "dark_purple_min_noise",
-      "pink_min_noise",
-      "matrix",
-      "cosmic",
-      "min_noise",
-      "red_min_noise",
-      "matrix2",
-      "green_med_noise",
-      "green_min_noise",
-      "blue_min_noise",
-      "purple_min_noise"
-    ]
-  }, {
-    "key": "offset_filters",
-    "title": "Offset Filters",
-    "filters":[
-      "extreme_offset_blue",
-      "extreme_offset_green",
-      "offset_green",
-      "extra_offset_blue",
-      "extra_offset_red",
-      "extra_offset_green",
-      "extreme_offset_red",
-      "offset",
-      "offset_blue",
-      "rgbSplit"
-    ]
-  }, {
-    "key": "specks_gen",
-    "title": "Specks Generators",
-    "filters": [
-      "specks_redscale",
-      "eclectic",
-      "green_specks",
-      "casino",
-      "specks",
-      "yellow_casino",
-      "retroviolet",
-      "black_specks",
-      "white_specks",
-      "salt_and_pepper"
-    ]
-  }, {
-    "key": "misc",
-    "title": "Miscellaneous",
-    "filters": [
-      "threshold",
-      "threshold75",
-      "threshold125",
-      "pixelate",
-      "pixelate16"
-    ]
-  }]
+
 
   function FilterGroup({group}) {
     return (<Rows spacing="1u">
@@ -275,57 +262,35 @@ function OverlayOpen({overlay}) {
   }
   function Images() {
     if (filtersMap == null) {
-      return;
+      return <Rows spacing="2u"></Rows>;
     }
 
     return (<Rows spacing="2u">
       {groups.map((group, i) => (<FilterGroup group={group} key={group.key}/>))}
     </Rows>);
-    return filters.map(filter => <button
-      key={filter.key}
-      data-key={filter.key}
-      onClick={handleFilterClick}
-      ><img
-      src={filter.url}
-      width="100"
-      height="100"
-      data-key={filter.key}
-      onClick={handleFilterClick}
-      />
-      </button>);
   }
 
   console.log(loadingPercentage);
-  return (
-    <div className={styles.scrollContainer}>
-      <Rows spacing="1u">
-        <Button variant="primary" onClick={handleSave}>
-          {(saving || loading) && <LoadingIndicator size="medium"/>}{!saving && !loading && "Save and close"}
-        </Button>
-        <Button variant="secondary" onClick={handleClose}>
-          Close without saving
-        </Button>
-        {<ProgressBar
-          size="medium"
-          tone="info"
-          value={loadingPercentage}
-        />}
-        {isImageReady && filtersMap != null && <Images/>}
-      </Rows>
-    </div>
-  );
-}
+  if (overlay.isOpen) {
+    return (
+      <div className={styles.scrollContainer}>
+        <Rows spacing="1u">
+          <Button variant="primary" onClick={handleSave}>
+            {(saving || loading) && <LoadingIndicator size="medium"/>}{!saving && !loading && "Save and close"}
+          </Button>
+          <Button variant="secondary" onClick={handleClose}>
+            Close without saving
+          </Button>
+          {/*{<ProgressBar
+            size="medium"
+            tone="info"
+            value={loadingPercentage}
+          />}*/}
+          {isImageReady && filtersMap != null && <Images/>}
+        </Rows>
+      </div>);
+  }
 
-function OverlayClosed({overlay}) {
-  const [opening, setOpening] = React.useState(false);
-  React.useEffect(() => {
-    appProcess.registerOnMessage((sender, message) => {
-      const isImageReady = Boolean(message.isImageReady);
-      if (isImageReady) {
-        setOpening(false);
-      }
-    });
-  }, []);
   function handleOpen() {
     if (opening) {
       return;
@@ -338,7 +303,7 @@ function OverlayClosed({overlay}) {
     <div className={styles.scrollContainer}>
       <Rows spacing="2u">
         {!overlay.canOpen && !opening && <Alert tone="info">Select an image to apply an effect.</Alert>}
-        {(overlay.canOpen || opening)&& <Button
+        {(overlay.canOpen || opening) && <Button
           variant="primary" 
           // disabled={!overlay.canOpen}
           onClick={handleOpen}>
@@ -348,6 +313,7 @@ function OverlayClosed({overlay}) {
       </Rows>
     </div>
   );
+  // return <OverlayClosed overlay={overlay}/>
 }
 
 async function dataURLToCanvas(dataURL) {
@@ -377,3 +343,4 @@ async function dataURLToCanvas(dataURL) {
   });
     
 }
+

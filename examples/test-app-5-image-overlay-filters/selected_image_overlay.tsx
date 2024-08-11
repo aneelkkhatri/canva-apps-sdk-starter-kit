@@ -6,15 +6,15 @@ import { appProcess } from "@canva/platform";
 import React from "react"
 import PixelsJS from "./lib"
 
-export type CloseOpts = CloseParams;
+// export type CloseOpts = CloseParams;
 
-type OverlayProps = {
-  context1: AppProcessInfo<LaunchParams>;
-};
+// type OverlayProps = {
+//   context1: AppProcessInfo<LaunchParams>;
+// };
 
 let orig = null;
-export const SelectedImageOverlay = (props: OverlayProps) => {
-  const { context1: appContext } = props;
+export const SelectedImageOverlay = () => { //(props: OverlayProps) => {
+  // const { context1: appContext } = props;
 
   const selection = useSelection("image");
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
@@ -160,14 +160,16 @@ function clipAndDownscaleCanvasToImageURL(originalCanvas, originalContext) {
 
     // Create a new canvas element for downscaling to 100x100
     const newCanvas = document.createElement('canvas');
-    newCanvas.width = 400;
-    newCanvas.height = 400;
+    newCanvas.width = 200;
+    newCanvas.height = 200;
 
     // Get the context of the new canvas
     const newContext = newCanvas.getContext('2d');
+    newContext.imageSmoothingEnabled = true;
+    newContext.imageSmoothingQuality = 'high';
 
     // Draw the downscaled content from the square canvas to the new canvas
-    newContext.drawImage(squareCanvas, 0, 0, minDimension, minDimension, 0, 0, 400, 400);
+    newContext.drawImage(squareCanvas, 0, 0, minDimension, minDimension, 0, 0, 200, 200);
 
     // Convert the new canvas to a data URL (image URL)
     const imageURL = newCanvas.toDataURL();
