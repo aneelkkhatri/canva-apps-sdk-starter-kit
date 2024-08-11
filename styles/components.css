@@ -36,3 +36,12 @@
 .scrollContainer:focus-within::-webkit-scrollbar-thumb {
   visibility: visible;
 }
+
+.filterButton::after {
+  border-radius: 10px;
+/*  box-shadow: 0 0 0 2px var(--xAYPzA),inset 0 0 0 2px var(--C-q6Ig)}*/
+}
+
+.filterButton img {
+  border-radius: 8px;
+}

@@ -4,6 +4,11 @@ import { addAudioTrack, addNativeElement } from "@canva/design";
 import styles from "styles/components.css";
 
 export const App = () => {
+    window.broadcastChannel = new BroadcastChannel('video_channel');
+    broadcastChannel.onmessage = event => {
+      console.log('msg', event);
+    };
+
   const importAndAddImage = async () => {
     // Start uploading the image
     const image = await upload({

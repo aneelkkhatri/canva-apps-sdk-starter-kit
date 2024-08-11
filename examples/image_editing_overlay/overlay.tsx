@@ -138,6 +138,7 @@ export const Overlay = (props: OverlayProps) => {
   useEffect(() => {
     // set up message handler
     return void appProcess.registerOnMessage((_, message) => {
+      console.log("Hello");
       if (!message) {
         return;
       }
