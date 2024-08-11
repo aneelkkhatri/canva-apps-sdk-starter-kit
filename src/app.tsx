@@ -1,26 +1,28 @@
-import { Button, Rows, Text } from "@canva/app-ui-kit";
-import { addNativeElement } from "@canva/design";
+import { ObjectPanel } from "./object_panel"
+import { SelectedImageOverlay } from "./selected_image_overlay"
+
+
+import { Button, Rows } from "@canva/app-ui-kit";
+import { getTemporaryUrl, upload } from "@canva/asset";
+import { appProcess } from "@canva/platform";
+import * as React from "react";
 import styles from "styles/components.css";
+import { useOverlay } from "utils/use_overlay_hook";
+import { useSelection } from "utils/use_selection_hook";
+import PixelsJS from "./lib"
 
-export const App = () => {
-  const onClick = () => {
-    addNativeElement({
-      type: "TEXT",
-      children: ["Hello world!"],
-    });
-  };
+let orig = null;
 
-  return (
-    <div className={styles.scrollContainer}>
-      <Rows spacing="2u">
-        <Text>
-          To make changes to this app, edit the <code>src/app.tsx</code> file,
-          then close and reopen the app in the editor to preview the changes.
-        </Text>
-        <Button variant="primary" onClick={onClick} stretch>
-          Do something cool
-        </Button>
-      </Rows>
-    </div>
-  );
-};
+export function App() {
+  const context = appProcess.current.getInfo();
+
+  if (context.surface === "object_panel") {
+    return <ObjectPanel />;
+  }
+
+  if (context.surface === "selected_image_overlay") {
+    return <SelectedImageOverlay />;
+  }
+
+  throw new Error(`Invalid surface: ${context.surface}`);
+}
